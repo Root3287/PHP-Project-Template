@@ -3,7 +3,7 @@ $user = new User();
 $post = new Post();
 $poke = new Pokes();
 $token = Token::generate();
-if(!$user->isLoggedIn()){Redirect::to('/404');}
+if(!$user->isLoggedIn()){Redirect::to(404);}
 if(!$profile_user){
 	Redirect::to(404);//MAke 404
 }

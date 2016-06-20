@@ -35,7 +35,7 @@ $router->add('/register', function(){
 	return true;
 });
 $router->add('/404', function(){
-	require 'pages/404.php';
+	require 'pages/errors/404.php';
 	return true;
 });
 $router->add('/u/(.*)', function($profile_user){
@@ -138,5 +138,5 @@ $router->add('/user/update',function(){
 });
 
 if(!$router->run()){
-	Redirect::to('/404');
+	Redirect::to(404);
 }
