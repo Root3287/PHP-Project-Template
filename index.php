@@ -96,10 +96,6 @@ $router->add('/admin/notification/', function(){
 	require 'pages/admin/notification.php';	
 	return true;
 });
-$router->add('/admin/reports(.*)', function(){
-	require 'pages/admin/reports.php';
-	return true;
-});
 
 /*
 User
