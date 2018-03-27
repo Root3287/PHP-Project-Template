@@ -5,7 +5,7 @@ $GLOBALS['config'] = array(
 		"host" => "127.0.0.1", //127.0.0.1.
 		"user" => "root", //root
 		"password" => "", //password
-		"db" => "social-media", //social-media
+		"db" => "template", //social-media
 		"port" => "3306", //3306
 	),
 	"remember" => array(
@@ -47,7 +47,6 @@ spl_autoload_register(function($class){
 require_once 'functions.php';
 
 if(!empty($GLOBALS['config']) && !file_exists('/pages/install/install.php')){
-	$db = DB::getInstance();
 	if(Cookies::exists(Config::get('session/cookie_name')) && !Session::exists(Config::get('session/session_name'))){
 		$hash = Cookies::get(Config::get('session/cookie_name'));
 		$hashCheck= $db->get('user_session', array('hash','=',$hash));
@@ -73,14 +72,6 @@ if(!empty($GLOBALS['config']) && !file_exists('/pages/install/install.php')){
 		if($user->data()->banned == 1){
 			$user->logout();
 		} 
-
-		//Get the IP. Update it to our databases.
-		$ip = $user->getIP();
-		if(filter_var($ip, FILTER_VALIDATE_IP)){
-			$user->update(array(
-				'last_ip' => $ip
-			));
-		}
 
 		// Update online status
 		$user->update([

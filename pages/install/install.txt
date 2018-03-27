@@ -7,15 +7,6 @@ CREATE TABLE `groups` (
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;
-CREATE TABLE `settings` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`name` TEXT NOT NULL,
-	`value` TEXT NULL,
-	PRIMARY KEY (`id`)
-)
-COLLATE='latin1_swedish_ci'
-ENGINE=InnoDB
-;
 CREATE TABLE `users` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`username` VARCHAR(50) NOT NULL,
@@ -25,9 +16,7 @@ CREATE TABLE `users` (
 	`email` TEXT NOT NULL,
 	`group` INT(11) NOT NULL,
 	`joined` DATETIME NOT NULL,
-	`private` INT(11) NULL DEFAULT '0',
 	`active` int(11) NOT NULL DEFAULT '1',
-  	`last_ip` text,
   	`last_online` datetime NOT NULL,
   	`banned` tinyint(11) DEFAULT NULL,
 	PRIMARY KEY (`id`)
@@ -63,32 +52,13 @@ CREATE TABLE `notification` (
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;
-CREATE TABLE `posts` (
-	`id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`user_id` INT(10) UNSIGNED NOT NULL,
-	`content` LONGTEXT NOT NULL,
-	`hash` TEXT NULL,
-	`time` DATETIME NULL DEFAULT NULL,
-	`active` int(11) DEFAULT '1',
+CREATE TABLE `settings` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`name` TEXT NOT NULL,
+	`value` TEXT NULL,
 	PRIMARY KEY (`id`)
 )
 COLLATE='latin1_swedish_ci'
-ENGINE=InnoDB
-;
-CREATE TABLE `following` (
-	`id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`user_id` BIGINT(20) UNSIGNED NOT NULL,
-	`following_id` BIGINT(20) UNSIGNED NOT NULL,
-	PRIMARY KEY (`id`)
-)
-ENGINE=InnoDB
-;
-CREATE TABLE `mensions` (
-	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`user_id` BIGINT(20) UNSIGNED NOT NULL,
-	`post_hash` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
-)
 ENGINE=InnoDB
 ;
 

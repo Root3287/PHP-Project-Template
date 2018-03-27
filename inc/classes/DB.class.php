@@ -1,20 +1,28 @@
 <?php
 class DB{
-	private static $_instance = null;
+	private static $_instance = array();
 	private $_pdo, $_query, $_error = false, $_results, $_count = 0;
 	
-	private function __construct() {
+	public function __construct($host, $db, $user, $pass) {
 		try {
-			$this->_pdo = new PDO('mysql:host='.Config::get('mysql/host').';dbname='.Config::get('mysql/db'),Config::get('mysql/user'),Config::get('mysql/password'));
+			$this->_pdo = new PDO('mysql:host='.$host.';dbname='.$db,$user,$pass);
 		} catch(PDOException $e) {
 			die($e->getMessage());
 		}
+		self::$_instance[$db] = $this;
 	}
-	public static function getInstance() {
-		if(!isset(self::$_instance)) {
-			self::$_instance = new DB();
+	public static function getInstance($db = null) {
+		if(!isset($db)){
+			if(count(self::$_instance) > 0){
+				reset(self::$_instance);
+				$tes = self::$_instance[key(self::$_instance)];
+				return $tes;
+			}else{
+				$db = new DB(Config::get('mysql/host'), Config::get('mysql/db'), Config::get('mysql/user'), Config::get('mysql/password'));
+				return $db;
+			}
 		}
-		return self::$_instance;
+		return self::$_instance[$db];
 	}
 	public function query($sql, $params = array()) {
 		$this->_error = false;

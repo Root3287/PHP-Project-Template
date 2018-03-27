@@ -44,8 +44,8 @@ $router->add('/u/(.*)', function($profile_user){
 });
 
 $router->add('/test',function(){
-	//require 'pages/test.php';
-	return false;
+	require 'pages/test.php';
+	return true;
 });
 $router->add('/logout', function(){
 	require 'pages/logout.php';

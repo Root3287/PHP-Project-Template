@@ -4,7 +4,6 @@
 * Copyright (c) Timothy Gibbons 2015, All Rights Reserved; 
 * License: MIT
 */
-
 class Setting{
 	/**
 	 * GET - Get the value from the setting database
