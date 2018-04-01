@@ -8,6 +8,14 @@ $router->add('/', function (){
 		Redirect::to('/install');
 	}else{
 		$user = new User();
+		$userAdm = new AdminUser();
+		if($user->isLoggedIn()){
+			echo "Logged in";
+		}
+		echo "<Br>";
+		if($userAdm->isLoggedIn()){
+			echo "Admin Logged In";
+		}
 	}
 	return true;
 });
@@ -17,6 +25,31 @@ $router->add('/install(.*)', function(){
 	}else{
 		Redirect::to('/');
 	}
+	return true;
+});
+$router->add('/login', function(){
+	$user = new User();
+	$user->login('root', 'password', true);
+	Redirect::to('/');
+	return true;
+});
+$router->add('/adm/login', function(){
+	$user = new AdminUser();
+	$user->login('root', 'password', true);
+	Redirect::to('/');
+	return true;
+});
+$router->add('/adm/logout', function(){
+	$userAdm = new AdminUser();
+	$userAdm->logout();
+	Redirect::to('/');
+	return true;
+});
+
+$router->add('/logout', function(){
+	$userAdm = new User();
+	$userAdm->logout();
+	Redirect::to('/');
 	return true;
 });
 $router->add('/404', function(){

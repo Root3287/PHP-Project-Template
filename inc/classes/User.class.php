@@ -98,6 +98,10 @@ class User{
 		return "https://gravatar.com/avatar/".md5($this->data()->email)."?d=mm&s={$size}&r=pg";
 	}
 	public function logout() {
+		$userAdm = new AdminUser();
+		if($userAdm->isLoggedIn()){
+			$userAdm->logout();
+		}
 		$this->_db->delete('user_session', array('user_id', '=', $this->data()->id));
 		Session::delete($this->_sessionName);
 		Cookies::delete($this->_cookieName);
