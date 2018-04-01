@@ -15,15 +15,6 @@ class User{
 					//Log out
 				}
 			}
-			if(Session::exists('adm_'.$this->_sessionName)){
-				$user = Session::get('adm_'.$this->_sessionName);
-				
-				if($this->find($user)){
-					$this->_admLoggedIn = true;
-				}else{
-					//Log out
-				}
-			}
 		}else{
 			$this->find($user);
 		}
@@ -81,34 +72,6 @@ class User{
 		}
 		return false;	
 	}
-	public function admlogin($username = null, $pass = null, $remember = false){
-		if(!$username && !$pass && $this->exsit()){
-			Session::put('adm_'.$this->_sessionName, $this->data()->id);
-		}else{
-			$user = $this->find($username);
-			if($user){
-				if($this->_data->password === Hash::make($pass, $this->_data->salt)){
-					Session::put('adm_'.$this->_sessionName, $this->_data->id);
-					
-					if($remember){
-						$hash = Hash::unique();
-						$hashCheck = $this->_db->get('adm_user_session', array('user_id','=',$this->data()->id));
-						if(!$hashCheck->count()){
-							$this->_db->insert('adm_user_session',array(
-									'user_id' => $this->_data->id,
-									'hash' => $hash
-							));
-						}else{
-							$hash = $hashCheck->first()->hash;
-						}
-						Cookies::put('adm_'.$this->_cookieName, $hash, config::get('remember/expiry'));
-					}
-					return true;
-				}
-			}
-		}
-		return false;	
-	}
 	public function hasPermission($key) {
 		$group = $this->_db->get('groups', array('id', '=', $this->data()->group));
 		if ($group->count()); {
@@ -131,33 +94,13 @@ class User{
 	public function isLoggedIn(){
 		return $this->_isLogin;
 	}
-	public function isAdmLoggedIn(){
-		return $this->_admLoggedIn;
-	}
 	public function getAvatarURL($size = '32'){
 		return "https://gravatar.com/avatar/".md5($this->data()->email)."?d=mm&s={$size}&r=pg";
 	}
 	public function logout() {
 		$this->_db->delete('user_session', array('user_id', '=', $this->data()->id));
-		$this->_db->delete('adm_user_session', ['user_id', '=', $this->data()->id]);
 		Session::delete($this->_sessionName);
-		Session::delete('adm_'.$this->_sessionName);
-		cookies::delete($this->_cookieName);
-		cookies::delete('adm_'.$this->_cookieName);
-	}
-	public function admLogout() {
-		$this->_db->delete('adm_user_session', ['user_id', '=', $this->data()->id]);
-		Session::delete('adm_'.$this->_sessionName);
-		cookies::delete('adm_'.$this->_cookieName);
-	}
-	public function getIP(){
-		if(!empty($_SERVER['HTTP_CLIENT_IP'])) {
-		  $ip = $_SERVER['HTTP_CLIENT_IP'];
-		} else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		  $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		} else {
-		  $ip = $_SERVER['REMOTE_ADDR'];
-		}
-		return $ip;
+		Cookies::delete($this->_cookieName);
+		Cookies::delete('adm_'.$this->_cookieName);
 	}
 }

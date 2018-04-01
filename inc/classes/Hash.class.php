@@ -5,7 +5,7 @@ class Hash{
 	}
 	
 	public static function salt($length) {
-		return mcrypt_create_iv($length, MCRYPT_RAND);
+		return openssl_random_pseudo_bytes($length);
 	}
 	public static function unique() {
 		return self::make(uniqid());

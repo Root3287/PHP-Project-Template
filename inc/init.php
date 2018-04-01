@@ -4,7 +4,7 @@ $GLOBALS['config'] = array(
 		"mysql" => array(
 		"host" => "127.0.0.1", //127.0.0.1.
 		"user" => "root", //root
-		"password" => "", //password
+		"password" => "password", //password
 		"db" => "template", //social-media
 		"port" => "3306", //3306
 	),
@@ -15,6 +15,8 @@ $GLOBALS['config'] = array(
 		"token_name" => "token",
 		"cookie_name"=>"cookie",
 		"session_name"=>"session"
+		"admin_session_name" => "adm_session",
+		"admin_cookie_name" => "adm_session",
 	),
 );
 //Uncomment the following if the installation didn't add the code.
@@ -78,5 +80,4 @@ if(!empty($GLOBALS['config']) && !file_exists('/pages/install/install.php')){
 			'last_online'=> date('Y-m-d H:i:s'),
 		]);
 	}
-	unset($user);
 }
