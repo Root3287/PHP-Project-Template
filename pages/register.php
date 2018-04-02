@@ -54,7 +54,7 @@ if(Input::exists()){
 			}
 			if($user->login(escape(Input::get('username')), escape(Input::get('password')), false)){
 				Notification::createMessage('Welcome to the Social-Media '. $user->data()->name, $user->data()->id);
-				session::flash('complete', '<div class="alert alert-success">You completely register and you just got logged in.</div>');
+				Session::flash('complete', '<div class="alert alert-success">You completely register and you just got logged in.</div>');
 				Redirect::to('/');
 			}
 		}

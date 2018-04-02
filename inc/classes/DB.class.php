@@ -3,7 +3,7 @@ class DB{
 	private static $_instance = array();
 	private $_pdo, $_query, $_error = false, $_results, $_count = 0;
 	
-	public function __construct($host, $db, $user, $pass) {
+	public function __construct($host, $port, $db, $user, $pass) {
 		try {
 			$this->_pdo = new PDO('mysql:host='.$host.';dbname='.$db,$user,$pass);
 		} catch(PDOException $e) {
