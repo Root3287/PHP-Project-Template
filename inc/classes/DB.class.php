@@ -1,11 +1,13 @@
 <?php
 class DB{
 	private static $_instance = array();
-	private $_pdo, $_query, $_error = false, $_results, $_count = 0;
+	private $_pdo, $_query, $_error = false, $_results, $_count = 0, $_prefix = '';
 	
-	public function __construct($host, $port, $db, $user, $pass) {
+
+	public function __construct($host, $db, $user, $pass, $prefix = '') {
 		try {
 			$this->_pdo = new PDO('mysql:host='.$host.';dbname='.$db,$user,$pass);
+			$this->_prefix = $prefix;
 		} catch(PDOException $e) {
 			die($e->getMessage());
 		}
@@ -48,6 +50,7 @@ class DB{
 			$operator = $where[1];
 			$value    = $where[2];
 			//check that operator is valid then contstruct the query
+			$table = $this->_prefix.$table;
 			if (in_array($operator, $operators)){
 				$sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
 				//bind data if there is no errors with the query
@@ -71,6 +74,7 @@ class DB{
 			if ($i < count($fields)) {$values .= ", ";}
 			$i++;
 		}
+		$table = $this->_prefix.$table;
 		$sql = "INSERT INTO {$table} (`".implode('`, `', $keys)."`) VALUES ({$values}) ";
 		if (!$this->query($sql, $fields)->error()) {return true;}
 	
@@ -84,10 +88,64 @@ class DB{
 			if ($i < count($fields)) {$set .= ', ';}
 			$i++;
 		}
+		$table = $this->_prefix.$table;
 		$sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
 		if(!$this->query($sql, $fields)->_error) {return true;}
 		return false;
 	}
+
+	public function createTable($tableName, $data = array()){
+		$tableName = $this->_prefix.$tableName;
+		$sql = "CREATE TABLE `{$tableName}`(";
+		foreach ($data as $fields => $options) {
+			if(is_array($options)){
+				$sql.="`{$fields}` ";
+				$i = 0;
+				foreach ($options as $option => $value) {
+					if(is_string($option)){
+						$sql.= $option."({$value})";
+					}else{
+						$sql.=$value;
+					}
+
+					if($i < count($options)-1){$sql.=" ";}
+					$i++;
+				}
+				$sql.=", ";
+			}else if(is_string($options)){
+				$sql.="{$fields} (`{$options}`)";
+			}
+		}
+		$sql .= ")";
+		// /return $sql;
+		$q = $this->query($sql);
+		return ($q->error()) ? false : $q;
+	}
+
+	public function dropTable($table){
+		$table = $this->_prefix.$table;
+		$q = $this->query("DROP TABLE ?", [$table]);
+		return  $q->error() ? false : $q;
+	}
+
+	public function addColumn($table, $column, $options){
+		$table=$this->_prefix.$table;
+		$q = $this->query("ALTER TABLE `{$table}` ADD `{$column}` {$options}");
+		return ($q->error())?false:$q;
+	}
+
+	public function deleteColumn($table, $colum){
+		$table = $this->_prefix.$table;
+		$q = $this->query("ALTER TABLE `{$table}` DROP COLUMN `{$colum}` {$options}");
+		return ($q->error())?false:$q;
+	}
+
+	public function modifyColumn($table, $colum, $data){
+		$table = $this->_prefix.$table;
+		$q = $this->query("ALTER TABLE `{$table}` MODIFY COLUMN `{$colum}` {$data}");
+		return ($q->error())?false:$q;
+	}
+
 	public function results(){
 		return $this->_results;
 	}
@@ -96,7 +154,9 @@ class DB{
 	}
 	public function first() {
 		$results = $this->results();
-		return $results[0];
+		if(count($results) > 0){
+			return $results[0];
+		}
 	}
 	public function error() {
 		return $this->_error;

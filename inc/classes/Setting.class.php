@@ -14,9 +14,10 @@ class Setting{
 		if(isset($GLOBALS['config']) && !file_exists('pages/install/install.php')){
 			$db = DB::getInstance();
 			if($key){
-				$return = $db->get('settings',array('name', '=', $key))->results();
-				$return = htmlspecialchars($return[0]->value);
-				return $return;
+				$return = $db->get('settings',array('name', '=', $key));
+				if($return == true){
+					return htmlspecialchars($return->first()->value);
+				}
 			}
 		}
 	}
@@ -37,10 +38,12 @@ class Setting{
 	public static function update($name, $value){
 		if(isset($GLOBALS['config']) && !file_exists('pages/install/install.php')){
 			$db = DB::getInstance();
-			$id = $db->get('settings', array('name', '=' , $name))->first();
-			$id = $id->id;
-			$update = $db->update('settings', $id, array('name'=>escape($name), 'value'=>escape($value)));
-			return $update;
+			$id = $db->get('settings', array('name', '=' , $name));
+			if($id){
+				$id = $id->first()->id;
+				$update = $db->update('settings', $id, array('name'=>escape($name), 'value'=>escape($value)));
+				return $update;
+			}
 		}
 	}
 }
