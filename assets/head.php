@@ -9,5 +9,5 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="/assets/css/bootstrap 4.0/<?php echo Setting::get('bootstrap-theme');?>.css">
 <!-- Latest compiled and minified JavaScript -->
-<script src="/assets/js/jquery.js"></script>
-<script src="/assets/js/bootstrap.js"></script>
+<script src="/assets/js/bootstrap 4.0/jquery.js"></script>
+<script src="/assets/js/bootstrap 4.0/bootstrap.js"></script>
