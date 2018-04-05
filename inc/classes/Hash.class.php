@@ -1,11 +1,11 @@
 <?php
 class Hash{
 	public static function make($string, $salt= ''){
-		return hash('sha256', $string.$salt);	
+		return hash('sha512', $string.$salt);	
 	}
 	
 	public static function salt($length) {
-		return openssl_random_pseudo_bytes($length);
+		return Hash::unique_length($length);
 	}
 	public static function unique() {
 		return self::make(uniqid());

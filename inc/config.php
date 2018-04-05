@@ -1,12 +1,13 @@
 <?php
 $GLOBALS['config'] = array(
-		"config"=>array("name" => "Social-Media"),
+		"config"=> array("name" => "Social-Media"),
 		"mysql" => array(
 		"host" => "127.0.0.1", //127.0.0.1.
 		"user" => "root", //root
-		"password" => "password", //password
-		"db" => "template", //social-media
+		"password" => "", //password
+		"db" => "template", 
 		"port" => "3306", //3306
+		"prefix" => "",
 	),
 	"remember" => array(
 		"expiry" => 604800,

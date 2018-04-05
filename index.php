@@ -33,6 +33,25 @@ $router->add('/login', function(){
 	Redirect::to('/');
 	return true;
 });
+$router->add('/register', function(){
+	$user = new User();
+	if(DB::getInstance()->get("users", ["username", "=", "root"])->count()){
+		Redirect::to('/');
+		return true;
+	}else{
+			$salt = Hash::salt(16);
+			$password = Hash::make("password", $salt);
+			$q = DB::getInstance()->insert("users", [
+				"username" => "root",
+				"password" => $password,
+				"salt" => $salt,
+				"group" => 1,
+				"name" => "Timothy Gibbons",
+				"email" => "test@test.com",
+			]);
+	}
+	return true;
+});
 $router->add('/adm/login', function(){
 	$user = new AdminUser();
 	$user->login('root', 'password', true);
@@ -54,10 +73,6 @@ $router->add('/logout', function(){
 });
 $router->add('/404', function(){
 	require 'pages/errors/404.php';
-	return true;
-});
-$router->add('/logout', function(){
-	require 'pages/logout.php';
 	return true;
 });
 
