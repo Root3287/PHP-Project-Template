@@ -11,7 +11,7 @@ spl_autoload_register(function($class){
 
 require_once 'functions.php';
 
-if(!empty($GLOBALS['config']) && !file_exists('/pages/install/install.php')){
+if(isset($GLOBALS['config']['install']) && !file_exists('/pages/install/install.php')){
 	$db = DB::getInstance();
 	if(Cookies::exists(Config::get('session/cookie_name')) && !Session::exists(Config::get('session/session_name'))){
 		$hash = Cookies::get(Config::get('session/cookie_name'));

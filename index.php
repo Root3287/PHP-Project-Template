@@ -4,8 +4,8 @@ require 'inc/init.php';
 $router = new Router();
 
 $router->add('/', function (){
-	if(file_exists('pages/install/install.php') || !isset($GLOBALS['config'])){
-		Redirect::to('/install');
+	if(file_exists('pages/install/install.php') || !isset($GLOBALS['config']['install'])){
+		Redirect::to('/install/');
 	}else{
 		$user = new User();
 		$userAdm = new AdminUser();
@@ -19,61 +19,26 @@ $router->add('/', function (){
 	}
 	return true;
 });
-$router->add('/install(.*)', function(){
-	if(file_exists('pages/install/install.php')){
+$router->add('/install/', function(){
+	Redirect::to('/install/intro/');
+	return true;
+});
+$router->add('/install/(.*)/(.*)', function($step){
+	$step = escape($step);
+	if(file_exists('pages/install/install.php') && !isset($GLOBALS['config']['install'])){
 		require 'pages/install/install.php';
 	}else{
 		Redirect::to('/');
 	}
 	return true;
 });
-$router->add('/login', function(){
-	$user = new User();
-	$user->login('root', 'password', true);
-	Redirect::to('/');
-	return true;
-});
-$router->add('/register', function(){
-	$user = new User();
-	if(DB::getInstance()->get("users", ["username", "=", "root"])->count()){
-		Redirect::to('/');
-		return true;
-	}else{
-			$salt = Hash::salt(16);
-			$password = Hash::make("password", $salt);
-			$q = DB::getInstance()->insert("users", [
-				"username" => "root",
-				"password" => $password,
-				"salt" => $salt,
-				"group" => 1,
-				"name" => "Timothy Gibbons",
-				"email" => "test@test.com",
-			]);
-	}
-	return true;
-});
-$router->add('/adm/login', function(){
-	$user = new AdminUser();
-	$user->login('root', 'password', true);
-	Redirect::to('/');
-	return true;
-});
-$router->add('/adm/logout', function(){
-	$userAdm = new AdminUser();
-	$userAdm->logout();
-	Redirect::to('/');
-	return true;
-});
-
-$router->add('/logout', function(){
-	$userAdm = new User();
-	$userAdm->logout();
-	Redirect::to('/');
-	return true;
-});
 $router->add('/404', function(){
 	require 'pages/errors/404.php';
 	return true;
+});
+$router->add('/test', function(){
+	echo gethostbyname("127.0.0.1");
+return true;
 });
 
 if(!$router->run()){
