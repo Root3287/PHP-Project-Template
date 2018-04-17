@@ -1,4 +1,5 @@
 <?php
+require_once "inc/classes/Hash.class.php";
 $db = DB::getInstance();
 $data = [];
 $data["tableCreate"][] = $db->createTable("groups", [
@@ -21,7 +22,7 @@ $data["tableCreate"][] = $db->createTable("users", [
 	"id" => [
 		"INT" => 11,
 		"NOT NULL",
-		"AUTO_INCREMENT"
+		"AUTO_INCREMENT",
 	],
 	"username"=> [
 		"VARCHAR" => 50,
@@ -43,6 +44,10 @@ $data["tableCreate"][] = $db->createTable("users", [
 		"TEXT",
 		"NOT NULL",
 	],
+	"group" => [
+		"INT" => 11,
+		"NOT NULL",
+	],
 	"joined" => [
 		"DATETIME",
 	],
@@ -51,7 +56,7 @@ $data["tableCreate"][] = $db->createTable("users", [
 	],
 	"active" => [
 		"INT" => 11,
-		"DEFAULT `1`"
+		"DEFAULT '1'",
 	],
 	"PRIMARY KEY" => "id",
 ]);
@@ -83,7 +88,7 @@ $data["tableCreate"][] = $db->createTable("adm_user_session", [
 	],
 	"hash" => [
 		"LONGTEXT",
-		"NOT NULL"
+		"NOT NULL",
 	],
 	"PRIMARY KEY" => "id",
 ]);
@@ -118,7 +123,7 @@ $data['insert'][] = $db->insert("settings", [
 include_once 'inc/classes/Hash.class.php';
 $data['insert'][] = $db->insert("settings", [
 	"name" => "unique_id",
-	"value" => Hash::unique_id(32),
+	"value" => Hash::unique_length(32),
 ]);
 $data['insert'][] = $db->insert("groups", [
 	"group_name" => "Standard",
@@ -129,3 +134,21 @@ $data['insert'][] = $db->insert("groups", [
 	"permissions"=> "{\"Admin\":1}",
 ]);
 ?>
+<div class="container-fluid">
+	<?php
+	$i = 0;
+	foreach ($data as $d) {
+		foreach ($d as $key) {
+	?>
+		<div class="alert <?php if($key === true){echo "alert-success";}else{echo "alert-danger";} ?>">
+			<?php echo "[{$i}]".$name.": "; if($key === true){echo "Executed Command!";}else{echo "Failed to execute command!";}?>
+		</div>
+	<?php
+	$i++;
+	}
+	}
+	?>
+	<div class="float-right">
+		<a href="/install/register/" class="btn btn-primary">Continue</a>
+	</div>
+</div>

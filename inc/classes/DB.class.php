@@ -4,9 +4,9 @@ class DB{
 	private $_pdo, $_query, $_error = false, $_results, $_count = 0, $_prefix = '';
 	
 
-	public function __construct($host, $db, $user, $pass, $prefix = '') {
+	public function __construct($host, $port, $db, $user, $pass, $prefix = '') {
 		try {
-			$this->_pdo = new PDO('mysql:host='.$host.';dbname='.$db,$user,$pass);
+			$this->_pdo = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$db,$user,$pass);
 			$this->_prefix = $prefix;
 		} catch(PDOException $e) {
 			die($e->getMessage());
@@ -20,7 +20,7 @@ class DB{
 				$tes = self::$_instance[key(self::$_instance)];
 				return $tes;
 			}else{
-				$db = new DB(Config::get('mysql/host'), Config::get('mysql/db'), Config::get('mysql/user'), Config::get('mysql/password'), Config::get('mysql/prefix'));
+				$db = new DB(Config::get('mysql/host'), Config::get('port'), Config::get('mysql/db'), Config::get('mysql/user'), Config::get('mysql/password'), Config::get('mysql/prefix'));
 				return $db;
 			}
 		}
@@ -119,7 +119,7 @@ class DB{
 		$sql .= ")";
 		// /return $sql;
 		$q = $this->query($sql);
-		return ($q->error()) ? false : $q;
+		return ($q->error()) ? false : true;
 	}
 
 	public function dropTable($table){

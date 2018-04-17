@@ -1,8 +1,7 @@
 <?php
 //comment these out if you're working on the installation
-error_reporting(0);
-ini_set('display_errors', 0);
-
+//error_reporting(0);
+//ini_set('display_errors', 0);
 if($step == ""){
 	Redirect::to('/install/intro/');
 }
@@ -38,9 +37,16 @@ if($step == ""){
 		<?php
 			break;
 			case "requirements":
-		?>
-		<script>location.href = "/install/db/"</script>
-		<?php
+				if(!isset($GLOBALS['config'])){
+					echo "<script>location.href = \"/install/db/\"</script>";
+				}else{
+					require 'inc/init.php';
+					if(DB::getInstance()->get('users', ['id', '=', '1'])->count() > 1){
+						echo "<script>location.href = \"/install/finish/\"</script>";
+					}else{
+						echo "<script>location.href = \"/install/register/\"</script>";
+					}
+				}
 			break;
 			case "db":
 			require "inc/classes/Token.class.php";
@@ -74,6 +80,37 @@ if($step == ""){
 							Session::flash('alert-danger', "Cannot connect to server!");
 						}else{
 							//We insert it into the config...
+							$config =	'<?php'.PHP_EOL.
+										'$GLOBALS[\'config\'] = ['.PHP_EOL.
+										'	\'mysql\' => ['.PHP_EOL.
+										'		\'host\' => \''.Output::clean(Input::get('serverAddress')).'\','.PHP_EOL.
+										'		\'port\' => \''.Output::clean(Input::get('serverPort')).'\','.PHP_EOL.
+										'		\'db\' => \''.Output::clean(Input::get('database')).'\','.PHP_EOL.
+										'		\'prefix\' => \''.Output::clean(Input::get('prefix')).'\','.PHP_EOL.
+										'		\'user\' => \''.Output::clean(Input::get('username')).'\','.PHP_EOL.
+										'		\'password\' => \''.Output::clean(Input::get('password')).'\','.PHP_EOL.
+										'	],'.PHP_EOL.
+										'	\'session\' => ['.PHP_EOL.
+										'		\'session_name\' => \'session\','.PHP_EOL.
+										'		\'token_name\' => \'token\','.PHP_EOL.
+										'		\'cookie_name\' => \'cookie\','.PHP_EOL.
+										'	],'.PHP_EOL.
+										'	\'remember\' => ['. PHP_EOL.
+										'		\'expiry\' => 604800,'.PHP_EOL.
+										'	],'.PHP_EOL.
+										'];';
+							if(!file_exists('inc/config.php')){
+								$temp = fopen('inc/config.php', 'w');
+								fclose($temp);
+							}
+							if(is_writable('inc/config.php') && !isset($GLOBALS['config'])){
+								$file = fopen('inc/config.php','w');
+								fwrite($file, $config);
+								fclose($file);
+							} else {
+								die('Config not writable');
+							}
+							echo "<script>location.href=\"/install/dbInit/\"</script>";
 						}
 					}
 				}
@@ -110,8 +147,12 @@ if($step == ""){
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="database">Database:</label>
-							<input type="text" class="form-control" id="database" name="database" placeholder="template" value="<?php echo Input::get('database'); ?>">
+							<label for="database">Database</label>
+							<input type="text" class="form-control" name="database" id="database" placeholder="template" value="<?php echo Input::get('database'); ?>">
+						</div>
+						<div class="form-group">
+							<label for="prefix">Prefix</label>
+							<input type="text" class="form-control" id="prefix" name="prefix" placeholder="php_" value="<?php echo Input::get('prefix'); ?>">
 						</div>
 						<div class="form-group">
 							<label for="username">Username:</label>
@@ -135,6 +176,139 @@ if($step == ""){
 						<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
 					</form>
 				</div>
+			</div>
+		</div>
+		<?php
+			break;
+			case "dbInit":
+				require "install-database.php";
+			break;
+			case "register":
+			require "inc/classes/DB.class.php";
+			require "inc/classes/Token.class.php";
+			require "inc/classes/User.class.php";
+			require "inc/classes/Input.class.php";
+			require "inc/classes/Output.class.php";
+			require "inc/classes/Session.class.php";
+			require "inc/classes/Validation.class.php";
+
+			if(Input::exists()){
+				if(Token::check(Input::get('token'))){
+					$val = new Validation();
+					$validate = $val->check($_POST, [
+						"username" => [
+							"required" => true,
+							"min" => 2,
+							"max" => 50,
+							"spaces" => false,
+							"unique" => "users",
+						],
+						"name" => [
+							"required"=> true,
+						],
+						"email" => [
+							"required" => true,
+							"min" => 3,
+							"unique" => "users",
+						],
+						"password" => [
+							"required" => true,
+							"min" => 8,
+							"matches" => "password_conf",
+						],
+						"password_conf" => [
+							"required" => true,
+							"matches" => "password",
+							"min" => 8,
+						],
+					]);
+
+					if($validate->passed()){
+						$user = new User();
+						$salt = Hash::salt(16);
+						$pass = Hash::make(Input::get('password'), $salt);
+						if(DB::getInstance()->insert("users",[
+							"username" => Output::clean(Input::get('username')),
+							"name" => Output::clean(Input::get('name')),
+							"password" => $pass,
+							"salt" => $salt,
+							"email" => Output::clean(Input::get('email')),
+							"joined" => date('Y-m-d H:i:s'),
+							"group" => 2,
+							"active" => 1,
+						])){
+							echo "<script>location.href=\"/install/finish/\"</script>";
+						}else{
+							Session::flash('alert-danger', 'There was an problem inserting user!');
+						}
+					}else{
+						$msg = "";
+						foreach ($validate->errors() as $error) {
+							$msg .= $error . "<br>";
+						}
+						Session::flash("alert-danger", $msg);
+					}
+				}
+			}
+		?>
+		<div class="container-fluid mt-5">
+			<?php
+			if(Session::exists('alert-danger')){
+			?>
+			<div class="alert alert-danger"><?php echo Session::flash('alert-danger'); ?></div>
+			<?php
+			}
+			?>
+
+			<div class="card">
+				<div class="card-body">
+					<h1>Register</h1>
+					<form action="" method="POST">
+						<div class="form-group">
+							<label for="name">Name:</label>
+							<input type="text" class="form-control" name="name" placeholder="Name" id="name" value="<?php echo Input::get('name'); ?>">
+						</div>
+						<div class="form-group">
+							<label for="username">Username:</label>
+							<input type="text" class="form-control" name="username" placeholder="Username" id="username" value="<?php echo Input::get('username'); ?>">
+						</div>
+						<div class="form-group">
+							<label for="email">Email:</label>
+							<input value="<?php echo Input::get('email'); ?>" type="email" class="form-control" name="email" placeholder="Email" id="email">
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col">
+									<label for="password">Password</label>
+									<input type="password" placeholder="Password" name="password" id="password" class="form-control" value="<?php echo Input::get('password'); ?>">
+								</div>
+								<div class="col">
+									<label for="password_conf">Confirm Password</label>
+									<input type="password" placeholder="Confirm Password" name="password_conf" id="password_conf" class="form-control" value="<?php echo Input::get('password_conf'); ?>">
+								</div>
+							</div>
+						</div>
+						<div class="form-group float-right">
+							<input type="submit" value="Submit" class="btn btn-primary">
+							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<?php
+			break;
+			case "finish":
+			if(is_writable('core/config.php'))
+					file_put_contents('core/config.php', '$CONFIG[\'installed\'] = true;', FILE_APPEND);
+			else
+				die('Config not writable');
+		?>
+		<div class="container-fluid">
+			<h1 class="display-1 text-center">Congrats</h1>
+			<p class="text-muted text-center">You have finished installing the software! <br> See how easy was that?</p>
+			<div class="row align-items-center justify-content-center">
+				<a href="/" class="btn btn-lg btn-outline-primary text-center">Let's get started!</a>
 			</div>
 		</div>
 		<?php
