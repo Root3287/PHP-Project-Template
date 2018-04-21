@@ -1,7 +1,10 @@
 <?php
-
 if(file_exists('inc/config.php')){
 	require 'inc/config.php';
+}
+
+if(file_exists('inc/install.php')){
+	require 'inc/install.php';
 }
 
 session_start();
@@ -9,8 +12,25 @@ session_start();
 spl_autoload_register(function($class){
 	if (file_exists('inc/classes/'.$class.'.class.php')){
 		require 'inc/classes/'.$class.'.class.php';
+		return true;
 	}
+	return false;
 });
+
+$directories = scandir("modules");
+foreach ($directories as $dir) {
+	if(file_exists("modules/{$dir}/{$dir}.module.php")){
+		require "modules/{$dir}/{$dir}.module.php";
+	}
+}
+
+foreach (Module::getModules() as $instance) {
+	if($instance->getClassAutoload()){
+		spl_autoload_register($instance->getClassAutoload());
+	}
+}
+
+PageTimer::start();
 
 require_once 'functions.php';
 
@@ -47,7 +67,13 @@ if(isset($GLOBALS['config']['install']) && Config::get('config/install')){
 	$user = new User();
 	if($user->isLoggedIn()){
 
-		if($user->data()->banned == 1){
+		//ACTIVE CODES:
+		// 0 - Not Confirm
+		// 1 - Active
+		// 2 - Temp Ban
+		// 3 - Locked
+		// 4 - Banned
+		if($user->data()->active == 3){
 			$user->logout();
 		} 
 

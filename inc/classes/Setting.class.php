@@ -11,12 +11,12 @@ class Setting{
 	 * @return array      return a array with the value
 	 */
 	public static function get($key){
-		if(isset($GLOBALS['config']) && !file_exists('pages/install/install.php')){
+		if(isset($GLOBALS['config']['install']) && Config::get('config/install')){
 			$db = DB::getInstance();
 			if($key){
 				$return = $db->get('settings',array('name', '=', $key));
 				if($return == true){
-					return htmlspecialchars($return->first()->value);
+					return $return->first()->value;
 				}
 			}
 		}
@@ -36,7 +36,7 @@ class Setting{
 	 * @return array        array returned
 	 */
 	public static function update($name, $value){
-		if(isset($GLOBALS['config']) && !file_exists('pages/install/install.php')){
+		if(isset($GLOBALS['config']['install']) && Config::get('config/install')){
 			$db = DB::getInstance();
 			$id = $db->get('settings', array('name', '=' , $name));
 			if($id){

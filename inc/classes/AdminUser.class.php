@@ -58,7 +58,7 @@ class AdminUser{
 			$group = $this->_db->get('groups', array('id', '=', $this->user()->data()->group));
 			if ($group->count()); {
 				$permissions = json_decode($group->first()->permissions, true);
-				if ($permissions[$key] == true) {
+				if (isset($permissions[$key]) && $permissions[$key] == true) {
 					return true;
 				}
 			}

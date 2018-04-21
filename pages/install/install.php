@@ -1,9 +1,12 @@
 <?php
 //comment these out if you're working on the installation
-//error_reporting(0);
-//ini_set('display_errors', 0);
+error_reporting(0);
+ini_set('display_errors', 0);
 if($step == ""){
 	Redirect::to('/install/intro/');
+}
+if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true){
+	Redirect::to('/');
 }
 ?>
 <html lang="en">
@@ -94,6 +97,8 @@ if($step == ""){
 										'		\'session_name\' => \'session\','.PHP_EOL.
 										'		\'token_name\' => \'token\','.PHP_EOL.
 										'		\'cookie_name\' => \'cookie\','.PHP_EOL.
+										'		\'admin_cookie_name\' => \'adm_cookie_name\','.PHP_EOL.
+										'		\'admin_session_name\' => \'adm_session\','.PHP_EOL.
 										'	],'.PHP_EOL.
 										'	\'remember\' => ['. PHP_EOL.
 										'		\'expiry\' => 604800,'.PHP_EOL.
@@ -234,7 +239,7 @@ if($step == ""){
 							"salt" => $salt,
 							"email" => Output::clean(Input::get('email')),
 							"joined" => date('Y-m-d H:i:s'),
-							"group" => 2,
+							"group" => 3,
 							"active" => 1,
 						])){
 							echo "<script>location.href=\"/install/finish/\"</script>";
@@ -299,8 +304,12 @@ if($step == ""){
 		<?php
 			break;
 			case "finish":
-			if(is_writable('core/config.php'))
-					file_put_contents('core/config.php', '$CONFIG[\'installed\'] = true;', FILE_APPEND);
+			if(!file_exists('inc/install.php')){
+				$temp = fopen('inc/install.php', 'w');
+				fclose($temp);
+			}
+			if(is_writable('inc/install.php'))
+					file_put_contents('inc/install.php', '<?php\n$CONFIG[\'config\'][\'install\'] = true;\n?>', FILE_APPEND);
 			else
 				die('Config not writable');
 		?>

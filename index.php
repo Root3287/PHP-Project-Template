@@ -1,13 +1,6 @@
 <?php
 require 'inc/init.php';
 
-$directories = scandir("modules");
-foreach ($directories as $dir) {
-	if(file_exists("modules/{$dir}/{$dir}.module.php")){
-		require "modules/{$dir}/{$dir}.module.php";
-	}
-}
-
 $router = new Router();
 
 $router->add('/install/', function(){

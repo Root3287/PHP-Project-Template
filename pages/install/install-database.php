@@ -16,6 +16,9 @@ $data["tableCreate"][] = $db->createTable("groups", [
 		"TEXT",
 		"NOT NULL",
 	],
+	"badge" => [
+		"MEDIUMTEXT",
+	],
 	"PRIMARY KEY"=>"id",
 ]);
 $data["tableCreate"][] = $db->createTable("users", [
@@ -125,13 +128,28 @@ $data['insert'][] = $db->insert("settings", [
 	"name" => "unique_id",
 	"value" => Hash::unique_length(32),
 ]);
+
+$data['insert'][] = $db->insert("settings", [
+	"name" => "navbar-top",
+	"value" => "{\"links\":[]}",
+]);
+
+$data['insert'][] = $db->insert("settings", [
+	"name" => "navbar-bottom",
+	"value" => "{\"links\":[]}",
+]);
+
 $data['insert'][] = $db->insert("groups", [
 	"group_name" => "Standard",
 	"permissions" => "{}",
 ]);
 $data['insert'][] = $db->insert("groups", [
+	"group_name"=>"Mod",
+	"permissions"=> "{\"Mod\":1}",
+]);
+$data['insert'][] = $db->insert("groups", [
 	"group_name"=>"Admin",
-	"permissions"=> "{\"Admin\":1}",
+	"permissions"=> "{\"Admin\":1, \"Mod\":1}",
 ]);
 ?>
 <div class="container-fluid">

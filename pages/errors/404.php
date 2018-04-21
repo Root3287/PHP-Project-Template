@@ -16,13 +16,11 @@ $n = rand(0,count($quote)-1);
 	</head>
 	<body>
 		<?php include 'assets/nav.php';?>
-		<div class="container">
-			<div class="row">
-				<div class="jumbotron">
-					<h1>404</h1>
-					<h3><?php echo $quote[$n]?></h3>
-					<a onClick="window.history.back()" class="btn btn-primary btn-md">Go Back</a><a href="/" class="btn btn-md btn-default">Go Home</a>
-				</div>
+		<div class="container-fluid">
+			<div class="jumbotron">
+				<h1>404</h1>
+				<h3><?php echo $quote[$n]?></h3>
+				<a onClick="window.history.back()" class="btn btn-primary btn-md">Go Back</a><a href="/" class="btn btn-md btn-default">Go Home</a>
 			</div>
 		</div>
 		<?php include 'assets/foot.php';?>
