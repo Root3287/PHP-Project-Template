@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class User{
 	private $_db, $_data, $_isLogin, $_sessionName, $_cookieName, $_admLoggedIn;
 	public function __construct($user = null){
@@ -105,6 +105,5 @@ class User{
 		$this->_db->delete('user_session', array('user_id', '=', $this->data()->id));
 		Session::delete($this->_sessionName);
 		Cookies::delete($this->_cookieName);
-		Cookies::delete('adm_'.$this->_cookieName);
 	}
 }

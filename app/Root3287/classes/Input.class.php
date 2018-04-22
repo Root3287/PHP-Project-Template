@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class Input{
 	public static function get($item) {
 		if(isset($_POST[$item])){

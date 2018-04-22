@@ -1,8 +1,9 @@
 <?php
-$userAdm = new AdminUser();
-if(Input::exists()){
-	if(Token::check(Input::get('token'))){
-		$val = new Validation();
+use Root3287\classes;
+$userAdm = new classes\AdminUser();
+if(classes\Input::exists()){
+	if(classes\Token::check(classes\Input::get('token'))){
+		$val = new classes\Validation();
 		$validate = $val->check($_POST, [
 			"username" => [
 				"required" => true,
@@ -15,17 +16,17 @@ if(Input::exists()){
 		$msg = "";
 
 		if($validate->passed()){
-			if($userAdm->login(Input::get('username'), Input::get('password'))){
-				Redirect::to('/admin');
+			if($userAdm->login(classes\Input::get('username'), classes\Input::get('password'))){
+				classes\Redirect::to('/admin');
 			}else{
 				$msg .= "Wrong username/password<br>";
-				Session::flash('alert-danger', $msg);
+				classes\Session::flash('alert-danger', $msg);
 			}
 		}else{
 			foreach ($validate->errors() as $error) {
 				$msg.=$error."<br>";
 			}
-			Session::flash('alert-danger', $msg);
+			classes\Session::flash('alert-danger', $msg);
 		}
 	}
 }
@@ -38,8 +39,8 @@ if(Input::exists()){
 <body>
 	<?php include 'assets/nav.php';?>
 	<div class="container-fluid mt-4">
-		<?php if(Session::exists('alert-danger')): ?>
-			<div class="alert alert-danger"><?php echo Session::flash('alert-danger'); ?></div>
+		<?php if(classes\Session::exists('alert-danger')): ?>
+			<div class="alert alert-danger"><?php echo classes\Session::flash('alert-danger'); ?></div>
 		<?php endif; ?>
 		<div class="card">
 			<div class="card-body">
@@ -52,7 +53,7 @@ if(Input::exists()){
 
 					<div class="form-group float-right"><input type="submit" value="Login" class="btn btn-lg btn-primary"></div>
 
-					<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+					<input type="hidden" name="token" value="<?php echo classes\Token::generate();?>">
 				</form>
 			</div>
 		</div>

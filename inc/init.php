@@ -9,13 +9,9 @@ if(file_exists('inc/install.php')){
 
 session_start();
 
-spl_autoload_register(function($class){
-	if (file_exists('inc/classes/'.$class.'.class.php')){
-		require 'inc/classes/'.$class.'.class.php';
-		return true;
-	}
-	return false;
-});
+require "vendor/autoload.php";
+
+use Root3287\classes;
 
 $directories = scandir("modules");
 foreach ($directories as $dir) {
@@ -24,47 +20,47 @@ foreach ($directories as $dir) {
 	}
 }
 
-foreach (Module::getModules() as $instance) {
+foreach (Root3287\classes\Module::getModules() as $instance) {
 	if($instance->getClassAutoload()){
 		spl_autoload_register($instance->getClassAutoload());
 	}
 }
 
-PageTimer::start();
+Root3287\classes\PageTimer::start();
 
 require_once 'functions.php';
 
-if(isset($GLOBALS['config']['install']) && Config::get('config/install')){
-	$db = DB::getInstance();
-	if(Cookies::exists(Config::get('session/cookie_name')) && !Session::exists(Config::get('session/session_name'))){
-		$hash = Cookies::get(Config::get('session/cookie_name'));
+if(isset($GLOBALS['config']['install']) && classes\Config::get('config/install')){
+	$db = classes\DB::getInstance();
+	if(classes\Cookies::exists(classes\Config::get('session/cookie_name')) && !classes\Session::exists(classes\Config::get('session/session_name'))){
+		$hash = classes\Cookies::get(classes\Config::get('session/cookie_name'));
 		$hashCheck= $db->get('user_session', array('hash','=',$hash));
 		if($hashCheck->count()){
-			$user = new User($hashCheck->first()->user_id);
+			$user = new classes\User($hashCheck->first()->user_id);
 			$user->login();
 		}
 	}
 
-	if(Cookies::exists(Config::get('session/admin_cookie_name')) && !Session::exists(Config::get('session/admin_session_name'))){
-		$hash = Cookies::get(Config::get('session/admin_cookie_name'));
+	if(classes\Cookies::exists(classes\Config::get('session/admin_cookie_name')) && !classes\Session::exists(classes\Config::get('session/admin_session_name'))){
+		$hash = classes\Cookies::get(classes\Config::get('session/admin_cookie_name'));
 		$hashCheck= $db->get('adm_user_session', array('hash','=',$hash));
 		if($hashCheck->count()){
-			$user = new User($hashCheck->first()->user_id);
+			$user = new classes\User($hashCheck->first()->user_id);
 			$user->login();
 		}
 	}
 
 	//Error Reporting
-	ini_set('diplay_errors', Setting::get('debug'));
-	$error_reporting =(Setting::get('debug') == 'Off')? '0':'-1';
+	ini_set('diplay_errors', classes\Setting::get('debug'));
+	$error_reporting =(classes\Setting::get('debug') == 'Off')? '0':'-1';
 	error_reporting($error_reporting);
 
 	//if we didnt set a unique id then lets make one.
-	if(Setting::get('unique_id') == null || Setting::get('unique_id') == ""){
-		Setting::update('unique_id', substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0,62));
+	if(classes\Setting::get('unique_id') == null || classes\Setting::get('unique_id') == ""){
+		classes\Setting::update('unique_id', substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0,62));
 	}
 
-	$user = new User();
+	$user = new classes\User();
 	if($user->isLoggedIn()){
 
 		//ACTIVE CODES:

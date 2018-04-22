@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class Config{
 	public static function get($path = null) {
 		if($path) {

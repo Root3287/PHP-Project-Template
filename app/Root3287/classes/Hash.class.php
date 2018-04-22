@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class Hash{
 	public static function make($string, $salt= ''){
 		return hash('sha512', $string.$salt);	

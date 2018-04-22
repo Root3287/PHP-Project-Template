@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class Router{
 	private $_uri = array(), $_callback = array();
 	public function add($uri, $callback){

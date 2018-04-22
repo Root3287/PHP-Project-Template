@@ -1,12 +1,13 @@
 <?php
 //comment these out if you're working on the installation
-error_reporting(0);
-ini_set('display_errors', 0);
+//error_reporting(0);
+//ini_set('display_errors', 0);
+use Root3287\classes;
 if($step == ""){
-	Redirect::to('/install/intro/');
+	Root3287\classes\Redirect::to('/install/intro/');
 }
 if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true){
-	Redirect::to('/');
+	Root3287\classes\Redirect::to('/');
 }
 ?>
 <html lang="en">
@@ -52,46 +53,46 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 				}
 			break;
 			case "db":
-			require "inc/classes/Token.class.php";
-			require "inc/classes/Input.class.php";
-			require "inc/classes/Output.class.php";
-			require "inc/classes/Session.class.php";
-			if(Input::exists()){
-				if(Token::check(Input::get('token'))){
-					if(Input::get('test')){
+			require "app/Root3287/classes/Token.class.php";
+			require "app/Root3287/classes/Input.class.php";
+			require "app/Root3287/classes/Output.class.php";
+			require "app/Root3287/classes/Session.class.php";
+			if(classes\Input::exists()){
+				if(classes\Token::check(classes\Input::get('token'))){
+					if(classes\Input::get('test')){
 						$conn = new mysqli(
-							gethostbyname(Output::clean(Input::get('serverAddress'))), 
-							Output::clean(Input::get('username')), 
-							Output::clean(Input::get('password')), 
-							Output::clean(Input::get('database')),
-							(int) Output::clean(Input::get('serverPort'))
+							gethostbyname(classes\Output::clean(classes\Input::get('serverAddress'))), 
+							classes\Output::clean(classes\Input::get('username')), 
+							classes\Output::clean(classes\Input::get('password')), 
+							classes\Output::clean(classes\Input::get('database')),
+							(int) classes\Output::clean(classes\Input::get('serverPort'))
 						);
 						if($conn->connect_error){
-							Session::flash('alert-danger', "Cannot connect to server!");
+							classes\Session::flash('alert-danger', "Cannot connect to server!");
 						}else{
-							Session::flash('alert-success', "Sucessfully connected to the server!");
+							classes\Session::flash('alert-success', "Sucessfully connected to the server!");
 						}
 					}else{
 						$conn = new mysqli(
-							gethostbyname(Output::clean(Input::get('serverAddress'))), 
-							Output::clean(Input::get('username')), 
-							Output::clean(Input::get('password')), 
-							Output::clean(Input::get('database')),
-							(int) Output::clean(Input::get('serverPort'))
+							gethostbyname(classes\Output::clean(classes\Input::get('serverAddress'))), 
+							classes\Output::clean(classes\Input::get('username')), 
+							classes\Output::clean(classes\Input::get('password')), 
+							classes\Output::clean(classes\Input::get('database')),
+							(int) classes\Output::clean(classes\Input::get('serverPort'))
 						);
 						if($conn->connect_error){
-							Session::flash('alert-danger', "Cannot connect to server!");
+							classes\Session::flash('alert-danger', "Cannot connect to server!");
 						}else{
 							//We insert it into the config...
 							$config =	'<?php'.PHP_EOL.
 										'$GLOBALS[\'config\'] = ['.PHP_EOL.
 										'	\'mysql\' => ['.PHP_EOL.
-										'		\'host\' => \''.Output::clean(Input::get('serverAddress')).'\','.PHP_EOL.
-										'		\'port\' => \''.Output::clean(Input::get('serverPort')).'\','.PHP_EOL.
-										'		\'db\' => \''.Output::clean(Input::get('database')).'\','.PHP_EOL.
-										'		\'prefix\' => \''.Output::clean(Input::get('prefix')).'\','.PHP_EOL.
-										'		\'user\' => \''.Output::clean(Input::get('username')).'\','.PHP_EOL.
-										'		\'password\' => \''.Output::clean(Input::get('password')).'\','.PHP_EOL.
+										'		\'host\' => \''.classes\Output::clean(classes\Input::get('serverAddress')).'\','.PHP_EOL.
+										'		\'port\' => \''.classes\Output::clean(classes\Input::get('serverPort')).'\','.PHP_EOL.
+										'		\'db\' => \''.classes\Output::clean(classes\Input::get('database')).'\','.PHP_EOL.
+										'		\'prefix\' => \''.classes\Output::clean(classes\Input::get('prefix')).'\','.PHP_EOL.
+										'		\'user\' => \''.classes\Output::clean(classes\Input::get('username')).'\','.PHP_EOL.
+										'		\'password\' => \''.classes\Output::clean(classes\Input::get('password')).'\','.PHP_EOL.
 										'	],'.PHP_EOL.
 										'	\'session\' => ['.PHP_EOL.
 										'		\'session_name\' => \'session\','.PHP_EOL.
@@ -123,14 +124,14 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 		?>
 		<div class="container-fluid">
 			<?php
-			if(Session::exists('alert-danger')){
+			if(classes\Session::exists('alert-danger')){
 			?>
-			<div class="alert alert-danger"><?php echo Session::flash('alert-danger'); ?></div>
+			<div class="alert alert-danger"><?php echo classes\Session::flash('alert-danger'); ?></div>
 			<?php
 			}
-			if(Session::exists('alert-success')){
+			if(classes\Session::exists('alert-success')){
 			?>
-			<div class="alert alert-success"><?php echo Session::flash('alert-success'); ?></div>
+			<div class="alert alert-success"><?php echo classes\Session::flash('alert-success'); ?></div>
 			<?php
 			}
 			?>	
@@ -144,28 +145,28 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 							<div class="col text-center"><label for="serverPort">Server Port</label></div>
 							</div>
 							<div class="input-group">
-								<input name="serverAddress" id="serverAddr" type="text" placeholder="127.0.0.1" class="form-control" value="<?php echo Input::get('serverAddress'); ?>">
+								<input name="serverAddress" id="serverAddr" type="text" placeholder="127.0.0.1" class="form-control" value="<?php echo classes\Input::get('serverAddress'); ?>">
 								<div class="input-group-append">
 									<span class="input-group-text">:</span>
 								</div>
-								<input name="serverPort" id="serverPort" type="number" placeholder="3306" class="form-control" value="<?php echo Input::get('serverPort'); ?>">
+								<input name="serverPort" id="serverPort" type="number" placeholder="3306" class="form-control" value="<?php echo classes\Input::get('serverPort'); ?>">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="database">Database</label>
-							<input type="text" class="form-control" name="database" id="database" placeholder="template" value="<?php echo Input::get('database'); ?>">
+							<input type="text" class="form-control" name="database" id="database" placeholder="template" value="<?php echo classes\Input::get('database'); ?>">
 						</div>
 						<div class="form-group">
 							<label for="prefix">Prefix</label>
-							<input type="text" class="form-control" id="prefix" name="prefix" placeholder="php_" value="<?php echo Input::get('prefix'); ?>">
+							<input type="text" class="form-control" id="prefix" name="prefix" placeholder="php_" value="<?php echo classes\Input::get('prefix'); ?>">
 						</div>
 						<div class="form-group">
 							<label for="username">Username:</label>
-							<input type="text" class="form-control" id="username" name="username" placeholder="root" value="<?php echo Input::get('username'); ?>">
+							<input type="text" class="form-control" id="username" name="username" placeholder="root" value="<?php echo classes\Input::get('username'); ?>">
 						</div>
 						<div class="form-group">
 							<label for="password">Password:</label>
-							<input type="password" class="form-control" id="password" name="password" placeholder="password" value="<?php echo Input::get('password'); ?>">
+							<input type="password" class="form-control" id="password" name="password" placeholder="password" value="<?php echo classes\Input::get('password'); ?>">
 						</div>
 						<div class="form-group">
 							<div class="form-row">
@@ -178,7 +179,7 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 								<div class="col"><input type="submit" value="Submit" class="btn btn-md btn-primary form-control"></div>
 							</div>
 						</div>
-						<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+						<input type="hidden" name="token" value="<?php echo classes\Token::generate(); ?>">
 					</form>
 				</div>
 			</div>
@@ -189,17 +190,17 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 				require "install-database.php";
 			break;
 			case "register":
-			require "inc/classes/DB.class.php";
-			require "inc/classes/Token.class.php";
-			require "inc/classes/User.class.php";
-			require "inc/classes/Input.class.php";
-			require "inc/classes/Output.class.php";
-			require "inc/classes/Session.class.php";
-			require "inc/classes/Validation.class.php";
+			require "app/Root3287/classes/DB.class.php";
+			require "app/Root3287/classes/Token.class.php";
+			require "app/Root3287/classes/User.class.php";
+			require "app/Root3287/classes/Input.class.php";
+			require "app/Root3287/classes/Output.class.php";
+			require "app/Root3287/classes/Session.class.php";
+			require "app/Root3287/classes/Validation.class.php";
 
-			if(Input::exists()){
-				if(Token::check(Input::get('token'))){
-					$val = new Validation();
+			if(classes\Input::exists()){
+				if(classes\Token::check(classes\Input::get('token'))){
+					$val = new classes\Validation();
 					$validate = $val->check($_POST, [
 						"username" => [
 							"required" => true,
@@ -229,38 +230,38 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 					]);
 
 					if($validate->passed()){
-						$user = new User();
-						$salt = Hash::salt(16);
-						$pass = Hash::make(Input::get('password'), $salt);
-						if(DB::getInstance()->insert("users",[
-							"username" => Output::clean(Input::get('username')),
-							"name" => Output::clean(Input::get('name')),
+						$user = new classes\User();
+						$salt = classes\Hash::salt(16);
+						$pass = classes\Hash::make(classes\Input::get('password'), $salt);
+						if(classes\DB::getInstance()->insert("users",[
+							"username" => classes\Output::clean(classes\Input::get('username')),
+							"name" => classes\Output::clean(classes\Input::get('name')),
 							"password" => $pass,
 							"salt" => $salt,
-							"email" => Output::clean(Input::get('email')),
+							"email" => classes\Output::clean(classes\Input::get('email')),
 							"joined" => date('Y-m-d H:i:s'),
 							"group" => 3,
 							"active" => 1,
 						])){
 							echo "<script>location.href=\"/install/finish/\"</script>";
 						}else{
-							Session::flash('alert-danger', 'There was an problem inserting user!');
+							classes\Session::flash('alert-danger', 'There was an problem inserting user!');
 						}
 					}else{
 						$msg = "";
 						foreach ($validate->errors() as $error) {
 							$msg .= $error . "<br>";
 						}
-						Session::flash("alert-danger", $msg);
+						classes\Session::flash("alert-danger", $msg);
 					}
 				}
 			}
 		?>
 		<div class="container-fluid mt-5">
 			<?php
-			if(Session::exists('alert-danger')){
+			if(classes\Session::exists('alert-danger')){
 			?>
-			<div class="alert alert-danger"><?php echo Session::flash('alert-danger'); ?></div>
+			<div class="alert alert-danger"><?php echo classes\Session::flash('alert-danger'); ?></div>
 			<?php
 			}
 			?>
@@ -271,31 +272,31 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 					<form action="" method="POST">
 						<div class="form-group">
 							<label for="name">Name:</label>
-							<input type="text" class="form-control" name="name" placeholder="Name" id="name" value="<?php echo Input::get('name'); ?>">
+							<input type="text" class="form-control" name="name" placeholder="Name" id="name" value="<?php echo classes\Input::get('name'); ?>">
 						</div>
 						<div class="form-group">
 							<label for="username">Username:</label>
-							<input type="text" class="form-control" name="username" placeholder="Username" id="username" value="<?php echo Input::get('username'); ?>">
+							<input type="text" class="form-control" name="username" placeholder="Username" id="username" value="<?php echo classes\Input::get('username'); ?>">
 						</div>
 						<div class="form-group">
 							<label for="email">Email:</label>
-							<input value="<?php echo Input::get('email'); ?>" type="email" class="form-control" name="email" placeholder="Email" id="email">
+							<input value="<?php echo classes\Input::get('email'); ?>" type="email" class="form-control" name="email" placeholder="Email" id="email">
 						</div>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col">
 									<label for="password">Password</label>
-									<input type="password" placeholder="Password" name="password" id="password" class="form-control" value="<?php echo Input::get('password'); ?>">
+									<input type="password" placeholder="Password" name="password" id="password" class="form-control" value="<?php echo classes\Input::get('password'); ?>">
 								</div>
 								<div class="col">
 									<label for="password_conf">Confirm Password</label>
-									<input type="password" placeholder="Confirm Password" name="password_conf" id="password_conf" class="form-control" value="<?php echo Input::get('password_conf'); ?>">
+									<input type="password" placeholder="Confirm Password" name="password_conf" id="password_conf" class="form-control" value="<?php echo classes\Input::get('password_conf'); ?>">
 								</div>
 							</div>
 						</div>
 						<div class="form-group float-right">
 							<input type="submit" value="Submit" class="btn btn-primary">
-							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+							<input type="hidden" name="token" value="<?php echo classes\Token::generate();?>">
 						</div>
 					</form>
 				</div>
@@ -309,7 +310,7 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 				fclose($temp);
 			}
 			if(is_writable('inc/install.php'))
-					file_put_contents('inc/install.php', '<?php\n$CONFIG[\'config\'][\'install\'] = true;\n?>', FILE_APPEND);
+					file_put_contents('inc/install.php', '<?php'.PHP_EOL.'$CONFIG[\'config\'][\'install\'] = true;'.PHP_EOL, FILE_APPEND);
 			else
 				die('Config not writable');
 		?>

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class DB{
 	private static $_instance = array();
 	private $_pdo, $_query, $_error = false, $_results, $_count = 0, $_prefix = '';
@@ -6,9 +6,9 @@ class DB{
 
 	public function __construct($host, $port, $db, $user, $pass, $prefix = '') {
 		try {
-			$this->_pdo = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$db,$user,$pass);
+			$this->_pdo = new \PDO('mysql:host='.$host.';port='.$port.';dbname='.$db,$user,$pass);
 			$this->_prefix = $prefix;
-		} catch(PDOException $e) {
+		} catch(\PDOException $e) {
 			die($e->getMessage());
 		}
 		self::$_instance[$db] = $this;
@@ -37,7 +37,7 @@ class DB{
 			 	}
 			}	 
 			if($this->_query->execute()) {
-				$this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+				$this->_results = $this->_query->fetchAll(\PDO::FETCH_OBJ);
 				$this->_count = $this->_query->rowCount();
 			} else {$this->_error = true;}
 		}

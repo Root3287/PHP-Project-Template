@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class PageTimer{
 	private static $_time;
 	public static function start(){

@@ -1,8 +1,9 @@
 <?php
-$user = new User();
-if(Input::exists()){
-	if(Token::check(Input::get('token'))){
-		$val = new Validation();
+use Root3287\classes;
+$user = new classes\User();
+if(classes\Input::exists()){
+	if(classes\Token::check(classes\Input::get('token'))){
+		$val = new classes\Validation();
 		$validate = $val->check($_POST, [
 			"username" => [
 				"required" => true,
@@ -15,18 +16,18 @@ if(Input::exists()){
 		$msg = "";
 
 		if($validate->passed()){
-			if($user->login(Input::get('username'), Input::get('password'))){
-				Session::flash('alert-success', "You have been logged in!");
-				Redirect::to('/');
+			if($user->login(classes\Input::get('username'), classes\Input::get('password'))){
+				classes\Session::flash('alert-success', "You have been logged in!");
+				classes\Redirect::to('/');
 			}else{
 				$msg .= "Wrong username/password<br>";
-				Session::flash('alert-danger', $msg);
+				classes\Session::flash('alert-danger', $msg);
 			}
 		}else{
 			foreach ($validate->errors() as $error) {
 				$msg.=$error."<br>";
 			}
-			Session::flash('alert-danger', $msg);
+			classes\Session::flash('alert-danger', $msg);
 		}
 	}
 }
@@ -39,8 +40,8 @@ if(Input::exists()){
 <body>
 	<?php include 'assets/nav.php';?>
 	<div class="container-fluid mt-4">
-		<?php if(Session::exists('alert-danger')): ?>
-			<div class="alert alert-danger"><?php echo Session::flash('alert-danger'); ?></div>
+		<?php if(classes\Session::exists('alert-danger')): ?>
+			<div class="alert alert-danger"><?php echo classes\Session::flash('alert-danger'); ?></div>
 		<?php endif; ?>
 		<div class="card">
 			<div class="card-body">
@@ -56,7 +57,7 @@ if(Input::exists()){
 						<div class="col"><a href="/register" class="form-control btn btn-md btn-danger">Register</a></div>
 						<div class="col"><input type="submit" value="Submit" class="form-control btn btn-md btn-primary"></div>
 					</div>
-					<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+					<input type="hidden" name="token" value="<?php echo classes\Token::generate(); ?>">
 				</form>
 			</div>
 		</div>

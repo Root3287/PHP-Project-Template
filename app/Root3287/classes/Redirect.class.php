@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class Redirect{
 	public static function to($location){
 		if($location){

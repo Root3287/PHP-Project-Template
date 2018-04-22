@@ -1,5 +1,6 @@
 <?php
-$refUserBadge = DB::getInstance()->get("groups", ["id", "=", $userQuery->data()->group])->first()->badge;
+use Root3287\classes;
+$refUserBadge = classes\DB::getInstance()->get("groups", ["id", "=", $userQuery->data()->group])->first()->badge;
 ?>
 <!DOCTYPE html>
 <html>

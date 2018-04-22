@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class Cookies{
 	public static function exists($name){
 		return (isset($_COOKIE[$name]))? true: false;

@@ -1,7 +1,8 @@
 <?php
-$user = new User();
-if(Input::exists()){
-	if(Token::check(Input::get('token'))){
+use Root3287\classes;
+$user = new classes\User();
+if(classes\Input::exists()){
+	if(classes\Token::check(classes\Input::get('token'))){
 		$val = new Validation();
 		$validate = $val->check($_POST, [
 			"username" => [
@@ -35,29 +36,29 @@ if(Input::exists()){
 
 		if($validate->passed()){
 			try{
-				$salt = Hash::salt(16);
+				$salt = classes\Hash::salt(16);
 				$user->create([
-					"username" => Output::clean(Input::get('username')),
-					"password" => Hash::make(Input::get('password'), $salt),
+					"username" => classes\Output::clean(classes\Input::get('username')),
+					"password" => classes\Hash::make(classes\Input::get('password'), $salt),
 					"salt" => $salt,
 					"group" => 1,
-					"name" => Output::clean(Input::get('name')),
-					"email" => Output::clean(Input::get('email')),
+					"name" => classes\Output::clean(classes\Input::get('name')),
+					"email" => classes\Output::clean(classes\Input::get('email')),
 					"joined" => date("Y-m-d H:i:s"),
 					"active" => 1,
 				]);
-				if($user->login(Input::get('username'), Input::get('password'))){
-					Session::flash('alert-success', "You have been registered and logged in!");
-					Redirect::to('/');
+				if($user->login(classes\Input::get('username'), classes\Input::get('password'))){
+					classes\Session::flash('alert-success', "You have been registered and logged in!");
+					classes\Redirect::to('/');
 				}
-			}catch(Exception $e){
-				Session::flash('alert-danger', $e->getMessage());
+			}catch(\Exception $e){
+				classes\Session::flash('alert-danger', $e->getMessage());
 			}
 		}else{
 			foreach ($validate->errors() as $error) {
 				$msg.=$error."<br>";
 			}
-			Session::flash('alert-danger', $msg);
+			classes\Session::flash('alert-danger', $msg);
 		}
 	}
 }
@@ -70,8 +71,8 @@ if(Input::exists()){
 <body>
 	<?php include 'assets/nav.php';?>
 	<div class="container-fluid mt-4">
-		<?php if(Session::exists('alert-danger')): ?>
-			<div class="alert alert-danger"><?php echo Session::flash('alert-danger'); ?></div>
+		<?php if(classes\Session::exists('alert-danger')): ?>
+			<div class="alert alert-danger"><?php echo classes\Session::flash('alert-danger'); ?></div>
 		<?php endif; ?>
 		<div class="card">
 			<div class="card-body">
@@ -98,7 +99,7 @@ if(Input::exists()){
 						<div class="col"><a href="/register" class="form-control btn btn-md btn-danger">Register</a></div>
 						<div class="col"><input type="submit" value="Submit" class="form-control btn btn-md btn-primary"></div>
 					</div>
-					<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+					<input type="hidden" name="token" value="<?php echo classes\Token::generate(); ?>">
 				</form>
 			</div>
 		</div>

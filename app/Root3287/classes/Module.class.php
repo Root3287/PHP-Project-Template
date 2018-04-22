@@ -1,10 +1,11 @@
-<?php
+<?php namespace Root3287\classes;
 class Module{
 	private static $_instance = [];
 	private $_db;
 	private $_uri = [], $_callback =[];
 	private $_classReg;
 	private $_name;
+	private $_assets = [];
 
 	public function __construct($module){
 		$this->_name = $module;
@@ -48,6 +49,17 @@ class Module{
 	}
 	public function getName(){
 		return $this->_name;
+	}
+
+	public function addAsset($type, $path, $option = ''){
+		switch($type){
+			case "css":
+				$this->_assets[] = "<link rel=\"stylesheet\" href=\"modules/{$this->_name}/{$path}\" {$option}>";
+				break;
+			case "js":
+				$this->_assets[] = "<script src=\"modules/{$this->_name}/{$path}\" $option></script>";
+				break;
+		}
 	}
 }
 ?>

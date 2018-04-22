@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 // Recreated from http://code.tutsplus.com/tutorials/how-to-paginate-data-with-php--net-2928
 // Thank you so much!
 class PaginateArray{

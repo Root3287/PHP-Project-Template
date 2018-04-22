@@ -1,6 +1,6 @@
 <?php
-$user = new User();
-$navbar = json_decode(Setting::get('navbar_top'), true)['links'];
+$user = new Root3287\classes\User();
+$navbar = json_decode(Root3287\classes\Setting::get('navbar_top'), true)['links'];
 ?>
 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
   <!-- Brand -->

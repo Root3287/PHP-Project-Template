@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 /*
 * Timothy Gibbons
 * Copyright (c) Timothy Gibbons 2015, All Rights Reserved; 

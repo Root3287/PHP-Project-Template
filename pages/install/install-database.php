@@ -1,5 +1,8 @@
 <?php
-require_once "inc/classes/Hash.class.php";
+require_once "app/Root3287/classes/Hash.class.php";
+require_once "app/Root3287/classes/DB.class.php";
+use Root3287\classes\DB as DB;
+use Root3287\classes\Hash as Hash;
 $db = DB::getInstance();
 $data = [];
 $data["tableCreate"][] = $db->createTable("groups", [
@@ -110,6 +113,29 @@ $data["tableCreate"][]= $db->createTable("settings", [
 	],
 	"PRIMARY KEY" => "id",
 ]);
+$data["tableCreate"][]= $db->createTable("logs", [
+	"id" => [
+		"BIGINT",
+		"NOT NULL",
+		"AUTO_INCREMENT",
+	],
+	"date" => [
+		"DATETIME",
+		"NOT NULL"
+	],
+	"user" => [
+		"INT" => 11,
+		"NOT NULL",
+	],
+	"action"=>[
+		"TEXT",
+		"NOT NULL",
+	],
+	"info" => [
+		"TEXT",
+	],
+	"PRIMARY KEY" => "id",
+]);
 
 $data['insert'][] = $db->insert("settings", [
 	"name" => "title",
@@ -123,7 +149,6 @@ $data['insert'][] = $db->insert("settings", [
 	"name" => "debug",
 	"value" => "Off",
 ]);
-include_once 'inc/classes/Hash.class.php';
 $data['insert'][] = $db->insert("settings", [
 	"name" => "unique_id",
 	"value" => Hash::unique_length(32),

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Root3287\classes;
 class AdminUser{
 	private $_user, $_db, $_loggedIn = false;
 
