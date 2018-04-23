@@ -1,10 +1,18 @@
 <?php
 use Root3287\classes;
-$core = classes\Module::Register("core");
+$core = Root3287\classes\Module::Register("core");
 $core->description =  "Some Module";
 $core->author = "Timothy Gibbons";
 $core->version = "1.0.0";
 $core->required = true;
+
+$core->classAutoload(function($class){
+	if (file_exists('modules/Core/classes/'.$class.'.class.php')){
+		require 'classes/'.$class.'.class.php';
+		return true;
+	}
+	return false;
+}); 
 
 $core->addPage('/', function(){
 	require 'pages/index.php';
@@ -36,8 +44,6 @@ $core->addPage('/admin/', function(){
 		}
 	}
 	return true;
-});
-$core->addPage('/test', function(){
 });
 $core->addPage('/logout', function(){
 	$user = new classes\User();
@@ -101,7 +107,6 @@ $core->addPage('/user/', function(){
 	return true;
 });
 $core->addPage('/user/(.*)/(.*)', function($page){
-	
 	return true;
-})
+});
 ?>

@@ -1,5 +1,5 @@
 <?php 
-$user = new User();
+$user = new Root3287\classes\User();
 $quote = array(
 	"There is no spoon!",
 	"A glitch in the matrix!",
@@ -20,7 +20,7 @@ $n = rand(0,count($quote)-1);
 			<div class="jumbotron">
 				<h1>404</h1>
 				<h3><?php echo $quote[$n]?></h3>
-				<a onClick="window.history.back()" class="btn btn-primary btn-md">Go Back</a><a href="/" class="btn btn-md btn-default">Go Home</a>
+				<a onClick="window.history.back()" class="btn btn-primary btn-md text-light">Go Back</a><a href="/" class="btn btn-md btn-default">Go Home</a>
 			</div>
 		</div>
 		<?php include 'assets/foot.php';?>

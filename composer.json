@@ -1,7 +1,7 @@
 {
 	"autoload": {
 		"psr-4" : {
-			"Root3287\\" : "app/Root3287"
+			"Root3287\\" : "inc/"
 		}
 	},
 	"require": {
