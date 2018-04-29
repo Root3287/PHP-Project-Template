@@ -20,7 +20,7 @@ class DB{
 				$tes = self::$_instance[key(self::$_instance)];
 				return $tes;
 			}else{
-				$db = new DB(Config::get('mysql/host'), Config::get('port'), Config::get('mysql/db'), Config::get('mysql/user'), Config::get('mysql/password'), Config::get('mysql/prefix'));
+				$db = new DB(Config::get('mysql/host'), Config::get('mysql/port'), Config::get('mysql/db'), Config::get('mysql/user'), Config::get('mysql/password'), Config::get('mysql/prefix'));
 				return $db;
 			}
 		}

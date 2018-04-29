@@ -90,7 +90,7 @@ $navbar = json_decode(Root3287\classes\Setting::get('navbar_top'), true)['links'
           <?php if($user->isLoggedIn()){ ?>
             <a class="dropdown-item" href="/user/">UserCP</a>
             <?php if($user->hasPermission('Mod')): ?>
-              <a class="dropdown-item" href="/login">ModCP</a>
+              <a class="dropdown-item" href="/mod/">ModCP</a>
             <?php endif; ?>
             <?php if($user->hasPermission('Admin')): ?>
               <a class="dropdown-item" href="/admin">AdminCP</a>

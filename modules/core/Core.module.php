@@ -22,7 +22,7 @@ $core->addPage('/login', function(){
 	$user= new classes\User();
 	if($user->isLoggedIn()){
 		classes\Session::flash('alert-warning', "You are already logged in!");
-		Redirect::to('/');
+		classes\Redirect::to('/');
 	}
 	require 'pages/login.php';
 	return true;

@@ -53,10 +53,10 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 				}
 			break;
 			case "db":
-			require "app/Root3287/classes/Token.class.php";
-			require "app/Root3287/classes/Input.class.php";
-			require "app/Root3287/classes/Output.class.php";
-			require "app/Root3287/classes/Session.class.php";
+			require "inc/classes/Token.class.php";
+			require "inc/classes/Input.class.php";
+			require "inc/classes/Output.class.php";
+			require "inc/classes/Session.class.php";
 			if(classes\Input::exists()){
 				if(classes\Token::check(classes\Input::get('token'))){
 					if(classes\Input::get('test')){
@@ -190,13 +190,13 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 				require "install-database.php";
 			break;
 			case "register":
-			require "app/Root3287/classes/DB.class.php";
-			require "app/Root3287/classes/Token.class.php";
-			require "app/Root3287/classes/User.class.php";
-			require "app/Root3287/classes/Input.class.php";
-			require "app/Root3287/classes/Output.class.php";
-			require "app/Root3287/classes/Session.class.php";
-			require "app/Root3287/classes/Validation.class.php";
+			require "inc/classes/DB.class.php";
+			require "inc/classes/Token.class.php";
+			require "inc/classes/User.class.php";
+			require "inc/classes/Input.class.php";
+			require "inc/classes/Output.class.php";
+			require "inc/classes/Session.class.php";
+			require "inc/classes/Validation.class.php";
 
 			if(classes\Input::exists()){
 				if(classes\Token::check(classes\Input::get('token'))){
@@ -305,12 +305,20 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 		<?php
 			break;
 			case "finish":
+			require "inc/classes/Redirect.class.php";
+
+			$directories = scandir("modules");
+			foreach ($directories as $dir) {
+				if(file_exists("modules/{$dir}/{$dir}.install.php") && $dir != "Core" && $GLOBALS['$dir']['install'] == false){
+					Redirect::to("/install/modules/?module=$dir");
+				}
+			}
 			if(!file_exists('inc/install.php')){
 				$temp = fopen('inc/install.php', 'w');
 				fclose($temp);
 			}
 			if(is_writable('inc/install.php'))
-					file_put_contents('inc/install.php', '<?php'.PHP_EOL.'$CONFIG[\'config\'][\'install\'] = true;'.PHP_EOL, FILE_APPEND);
+					file_put_contents('inc/install.php', '<?php'.PHP_EOL.'$GLOBALS[\'config\'][\'install\'] = true;'.PHP_EOL, FILE_APPEND);
 			else
 				die('Config not writable');
 		?>
@@ -322,6 +330,10 @@ if(isset($GLOBALS['config']['install']) && $GLOBALS['config']['install'] == true
 			</div>
 		</div>
 		<?php
+			break;
+
+			case "modules":
+
 			break;
 		}
 		?>

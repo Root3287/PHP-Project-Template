@@ -1,6 +1,6 @@
 <?php
-require_once "app/Root3287/classes/Hash.class.php";
-require_once "app/Root3287/classes/DB.class.php";
+require_once "inc/classes/Hash.class.php";
+require_once "inc/classes/DB.class.php";
 use Root3287\classes\DB as DB;
 use Root3287\classes\Hash as Hash;
 $db = DB::getInstance();
@@ -184,7 +184,7 @@ $data['insert'][] = $db->insert("groups", [
 		foreach ($d as $key) {
 	?>
 		<div class="alert <?php if($key === true){echo "alert-success";}else{echo "alert-danger";} ?>">
-			<?php echo "[{$i}]".$name.": "; if($key === true){echo "Executed Command!";}else{echo "Failed to execute command!";}?>
+			<?php echo "[{$i}]".''.": "; if($key === true){echo "Executed Command!";}else{echo "Failed to execute command!";}?>
 		</div>
 	<?php
 	$i++;
